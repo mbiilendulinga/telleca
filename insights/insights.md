@@ -1,4 +1,6 @@
  Telleca Telecom | Insights
+https://www.mbiile.com/projects/telleca/
+
 
 Analysis period: January 2022 – September 2025
 
@@ -212,3 +214,5 @@ The current report establishes the main patterns in the dataset. Several areas c
  Customer-level churn prediction
 
 These would extend the project from descriptive reporting into more advanced customer analytics.
+
+https://www.mbiile.com/projects/telleca/

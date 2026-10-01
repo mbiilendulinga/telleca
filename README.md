@@ -1,5 +1,7 @@
  Telleca Telecom | Customer & Churn Analysis
 
+PORTFOLIO & POWER BI DEMO : https://www.mbiile.com/projects/telleca/
+
 A Power BI business intelligence project analysing customer growth, revenue, customer behaviour and churn for a simulated telecommunications company.
 
 The analysis covers January 2022 – September 2025.
@@ -149,3 +151,4 @@ Detailed findings and observations are available in [`insights.md`](docs/insight
 ---
 
 Portfolio Project — Data Analytics & Business Intelligence*
+https://www.mbiile.com/projects/telleca/
