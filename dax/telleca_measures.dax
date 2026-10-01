@@ -1,0 +1,140 @@
+// ═══════════════════════════════════════
+// TELLECA CHURN REPORT — MEASURES
+// ═══════════════════════════════════════
+
+
+// ─── CUSTOMER ───
+
+Total Customers =
+COUNTROWS ( 'telleca customers' )
+
+Active Customers =
+CALCULATE ( [Total Customers], 'telleca customers'[customer_status] = "Active" )
+
+Avg Customer Age =
+AVERAGEX (
+    'telleca customers',
+    DATEDIFF ( 'telleca customers'[date_of_birth], TODAY (), YEAR )
+)
+
+Avg Tenure (months) =
+AVERAGEX (
+    'telleca customers',
+    DATEDIFF (
+        'telleca customers'[registration_date],
+        COALESCE ( RELATED ( 'telleca churn'[churn_date] ), TODAY () ),
+        MONTH
+    )
+)
+
+
+// ─── SUBSCRIPTION ───
+
+Total Subscriptions =
+COUNTROWS ( 'telleca subscriptions' )
+
+Avg Monthly Fee =
+AVERAGE ( 'telleca plans'[monthly_fee] )
+
+
+// ─── CHURN ───
+
+Churned Customers =
+CALCULATE ( COUNTROWS ( 'telleca churn' ), 'telleca churn'[churn_status] = "Churned" )
+
+Churn Rate % =
+DIVIDE ( [Churned Customers], [Total Customers] )
+
+Avg Tenure at Churn (months) =
+AVERAGEX (
+    FILTER ( 'telleca churn', 'telleca churn'[churn_status] = "Churned" ),
+    DATEDIFF (
+        RELATED ( 'telleca customers'[registration_date] ),
+        'telleca churn'[churn_date],
+        MONTH
+    )
+)
+
+Retention Attempted % =
+DIVIDE (
+    CALCULATE ( COUNTROWS ( 'telleca churn' ), 'telleca churn'[retention_attempted] = TRUE ),
+    [Churned Customers]
+)
+
+Retention Accepted % =
+DIVIDE (
+    CALCULATE ( COUNTROWS ( 'telleca churn' ), 'telleca churn'[retention_accepted] = TRUE ),
+    CALCULATE ( COUNTROWS ( 'telleca churn' ), 'telleca churn'[retention_attempted] = TRUE )
+)
+
+Retention Attempted Count =
+CALCULATE ( COUNTROWS ( 'telleca churn' ), 'telleca churn'[retention_attempted] = TRUE )
+
+Retention Accepted Count =
+CALCULATE ( COUNTROWS ( 'telleca churn' ), 'telleca churn'[retention_accepted] = TRUE )
+
+Avg Revenue Lost =
+AVERAGEX (
+    FILTER ( 'telleca subscriptions', RELATED ( 'telleca churn'[churn_status] ) = "Churned" ),
+    RELATED ( 'telleca plans'[monthly_fee] )
+)
+
+
+// ─── REVENUE ───
+
+Total Revenue =
+SUM ( 'telleca payments'[amount] )
+
+ARPU =
+DIVIDE ( [Total Revenue], DISTINCTCOUNT ( 'telleca payments'[customer_id] ) )
+
+Avg Days Late =
+AVERAGE ( 'telleca payments'[days_late] )
+
+Payment Rows =
+COUNTROWS ( 'telleca payments' )
+
+
+// ─── USAGE ───
+
+Avg Data Used (GB) =
+AVERAGE ( 'telleca usage_data'[data_used_gb] )
+
+Avg Allowance (GB) =
+AVERAGEX ( 'telleca usage_data', 'telleca usage_data'[Plan Data Allowance] )
+
+Overage Rate % =
+DIVIDE ( SUM ( 'telleca usage_data'[Is Overage] ), COUNTROWS ( 'telleca usage_data' ) )
+
+
+// ─── SERVICE ───
+
+Total Interactions =
+COUNTROWS ( 'telleca service_interactions' )
+
+Interactions per Customer =
+DIVIDE ( [Total Interactions], DISTINCTCOUNT ( 'telleca service_interactions'[customer_id] ) )
+
+Avg CSAT =
+AVERAGE ( 'telleca service_interactions'[customer_satisfaction] )
+
+FCR % =
+DIVIDE (
+    CALCULATE (
+        COUNTROWS ( 'telleca service_interactions' ),
+        'telleca service_interactions'[resolution_status] = "Resolved"
+    ),
+    [Total Interactions]
+)
+
+
+// ─── NETWORK ───
+
+Total Incidents =
+COUNTROWS ( 'telleca network_incidents' )
+
+Avg Incident Duration =
+AVERAGE ( 'telleca network_incidents'[duration_minutes] )
+
+Avg Resolution Time =
+AVERAGE ( 'telleca network_incidents'[resolution_time_hours] )
